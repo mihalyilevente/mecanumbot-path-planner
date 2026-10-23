@@ -1,0 +1,10 @@
+# Planner Server fragment only: merge into a separate complete Nav2 configuration.
+# Keep the existing robot configuration unchanged until integration is requested.
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "mecanumbot_path_planner/AStarPlanner"
+      # Accepted placeholders: shortest | safest | smoothest.
+      # Read on configure; no search or criterion cost functions exist yet.
+      optimization_mode: "shortest"
