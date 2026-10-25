@@ -1,0 +1,16 @@
+# Planner Server fragment only: merge into a separate complete Nav2 configuration.
+# Keep the existing robot configuration unchanged until integration is requested.
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "mecanumbot_path_planner/AStarPlanner"
+      # shortest | safest | smoothest | combined
+      # Parameters are read on configure.
+      optimization_mode: "shortest"
+      allow_unknown: false
+      # Safest/combined: safety_weight * integrated normalized costmap exposure.
+      safety_weight: 2.0
+      # Smoothest/combined: smoothness_weight * squared direction changes (rad^2).
+      # Units: meters/rad^2. Starting values require tuning in simulation.
+      smoothness_weight: 0.5
