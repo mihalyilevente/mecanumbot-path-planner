@@ -3,6 +3,6 @@
   <class name="mecanumbot_path_planner/AStarPlanner"
          type="mecanumbot_path_planner::AStarPlanner"
          base_class_type="nav2_core::GlobalPlanner">
-    <description>Humble global planner skeleton with shortest, safest and smoothest mode placeholders.</description>
+    <description>Humble grid A* planner with shortest, safest, smoothest, and combined weighted objectives.</description>
   </class>
 </library>

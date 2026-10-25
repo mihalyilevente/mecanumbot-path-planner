@@ -7,9 +7,10 @@ Development branch: **develop**. The **main** branch contains only the initial
 repository scaffold. Make future changes and pushes on develop.
 
 The [mecanumbot_path_planner](mecanumbot_path_planner/README.md) package provides a
-C++17 plugin with placeholders for shortest, safest, and smoothest criteria.
-**Pathfinding is not implemented:** planning requests fail explicitly. This
-repository does not modify the robot or simulation repositories.
+C++17 plugin implementing **shortest**, **safest**, **smoothest**, and
+**combined weighted** grid A* with explicit cost functions. This repository
+does not modify the robot or simulation repositories. Current development is
+local only; do not push until explicitly requested.
 
 ## Reopen this workspace
 

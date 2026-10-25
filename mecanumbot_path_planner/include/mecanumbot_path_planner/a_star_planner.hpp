@@ -4,12 +4,13 @@
 #include <memory>
 #include <string>
 
+#include "mecanumbot_path_planner/planner_options.hpp"
 #include "nav2_core/global_planner.hpp"
 
 namespace mecanumbot_path_planner
 {
 
-// Humble GlobalPlanner scaffold. Search and criterion costs are not implemented yet.
+// Humble GlobalPlanner with explicit length, cost exposure, and turn objectives.
 class AStarPlanner : public nav2_core::GlobalPlanner
 {
 public:
@@ -32,7 +33,7 @@ private:
   std::shared_ptr<tf2_ros::Buffer> tf_;
   std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
   std::string name_;
-  std::string optimization_mode_{"shortest"};
+  PlannerOptions options_;
   bool configured_{false};
   bool active_{false};
 };

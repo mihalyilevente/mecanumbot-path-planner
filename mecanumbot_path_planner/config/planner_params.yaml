@@ -5,6 +5,12 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "mecanumbot_path_planner/AStarPlanner"
-      # Accepted placeholders: shortest | safest | smoothest.
-      # Read on configure; no search or criterion cost functions exist yet.
+      # shortest | safest | smoothest | combined
+      # Parameters are read on configure.
       optimization_mode: "shortest"
+      allow_unknown: false
+      # Safest/combined: safety_weight * integrated normalized costmap exposure.
+      safety_weight: 2.0
+      # Smoothest/combined: smoothness_weight * squared direction changes (rad^2).
+      # Units: meters/rad^2. Starting values require tuning in simulation.
+      smoothness_weight: 0.5

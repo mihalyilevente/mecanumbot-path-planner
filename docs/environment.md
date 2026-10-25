@@ -64,7 +64,7 @@ Sources inspected read-only:
 
 Links and integration details are in the [package README](../mecanumbot_path_planner/README.md).
 
-## Validation
+## Initial scaffold validation (before shortest-path A*)
 
 - `colcon build --packages-select mecanumbot_path_planner`: **passed**, one package,
   about 78 seconds, no compilation errors or warnings reported.
@@ -83,3 +83,65 @@ Links and integration details are in the [package README](../mecanumbot_path_pla
 
 Full Planner Server bringup, simulation navigation, robot execution, and path
 quality evaluation are outside this scaffold's validation.
+
+## Local shortest-path implementation validation
+
+The next development step implements `shortest` grid A* and leaves `safest` and
+`smoothest` explicitly unimplemented. No dependencies were installed for this
+step. Work remains uncommitted on `develop`; nothing was pushed.
+
+- `colcon build --packages-select mecanumbot_path_planner`: passed with no
+  compiler warnings after correcting explicit Time construction in the tests.
+- 12 GoogleTest cases passed: 9 algorithm tests and 3 installed-plugin tests.
+  Both CTest targets passed. Colcon's combined summary counts 14 results
+  (12 cases plus 2 CTest targets), with 0 errors, failures, or skipped tests.
+- Algorithm tests include an independent Dijkstra comparison over 100 seeded
+  maps, deterministic paths, obstacle detours, corner blocking, bounds, unknown
+  cells, inscribed costs, exact endpoints, frames/stamps, and invalid poses.
+- The plugin test used a configured synthetic Costmap2DROS with no sensor layers
+  and no activation. It checked actual shortest-path output, lifecycle errors,
+  uninitialized costmap handling, the unknown-space parameter, and unchanged
+  costmap data.
+- Tests ran with `ROS_LOCALHOST_ONLY=1 ROS_DOMAIN_ID=91`. No robot or simulation
+  navigation was started. Full footprint and Planner Server integration remain
+  unvalidated; synthetic-map results do not establish robot navigation safety.
+
+Rebuild/test commands remain in the root and package READMEs. The package README
+documents exact search semantics and limits.
+
+## Safest and smoothest implementation validation
+
+Confirmed on 2026-10-24 after resuming the interrupted session:
+
+- Build succeeded; 19 GoogleTest cases and all 3 CTest targets passed.
+  Colcon reports 22 results, 0 errors, 0 failures, 0 skipped.
+- Both new objectives match an independent direction-expanded Dijkstra oracle
+  on 40 seeded maps each, including offset endpoints, connector turns, varied
+  weights and map resolutions. The original 100-map shortest-path check passes.
+- Tests demonstrate the distance/exposure and distance/turn tradeoffs, zero-weight
+  equivalence, unknown-space penalties, common collision rules, and invalid weights.
+- Installed-plugin tests exercise shortest, safest, smoothest, and combined modes.
+- No additional dependencies, robot runs, commits, or pushes were performed.
+  Changes remain local on develop. Synthetic tests do not establish robot safety
+  or dynamic trajectory smoothness; definitions and limits are in the package README.
+
+## Readability refactor validation
+
+Confirmed on 2026-10-25: the single large search implementation was separated
+into criterion planners, shared grid rules, reusable queue/search mechanics,
+option parsing, and path construction. Public behavior and objectives are
+unchanged. The package rebuilt successfully and all 22 reported test results
+passed with 0 errors, failures, or skipped tests. Changes remain local and
+uncommitted on `develop`; nothing was pushed.
+
+Source files are grouped under `src/plugin`, `src/core`, `src/planners`, and
+`src/search`. Tests are grouped under `test/unit` and `test/integration`.
+
+## Combined weighted planner
+
+The local implementation also provides `optimization_mode: combined`, minimizing
+`length + safety_weight * exposure + smoothness_weight * turns`. Both exposed
+weights are finite, nonnegative ROS parameters. When both are zero, combined
+mode delegates exactly to shortest. It reuses the shared search code and switches
+to direction-aware states only when turn weight is positive. No commit or push was
+performed. The current build reports 23 tests, 0 errors, 0 failures, and 0 skipped.
