@@ -28,15 +28,16 @@ PlannerOptions readOptions(
   nav2_util::declare_parameter_if_not_declared(
     node, key("allow_unknown"), rclcpp::ParameterValue(options.allow_unknown));
   nav2_util::declare_parameter_if_not_declared(
-    node, key("safety_weight"), rclcpp::ParameterValue(options.safety_weight));
+    node, key("safety_preference"), rclcpp::ParameterValue(options.safety_preference));
   nav2_util::declare_parameter_if_not_declared(
-    node, key("smoothness_weight"), rclcpp::ParameterValue(options.smoothness_weight));
+    node, key("smoothness_preference"), rclcpp::ParameterValue(options.smoothness_preference));
 
   options.mode = parseOptimizationMode(
     node->get_parameter(key("optimization_mode")).as_string());
   options.allow_unknown = node->get_parameter(key("allow_unknown")).as_bool();
-  options.safety_weight = node->get_parameter(key("safety_weight")).as_double();
-  options.smoothness_weight = node->get_parameter(key("smoothness_weight")).as_double();
+  options.safety_preference = node->get_parameter(key("safety_preference")).as_double();
+  options.smoothness_preference =
+    node->get_parameter(key("smoothness_preference")).as_double();
   validatePlannerOptions(options);
   return options;
 }

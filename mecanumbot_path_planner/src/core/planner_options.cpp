@@ -35,12 +35,14 @@ void validatePlannerOptions(const PlannerOptions & options)
     throw std::invalid_argument("Invalid optimization mode");
   }
 
-  const bool valid_weights =
-    std::isfinite(options.safety_weight) && options.safety_weight >= 0.0 &&
-    std::isfinite(options.smoothness_weight) && options.smoothness_weight >= 0.0;
-  if (!valid_weights) {
+  const bool valid_preferences =
+    std::isfinite(options.safety_preference) &&
+    options.safety_preference >= 0.0 && options.safety_preference <= 1.0 &&
+    std::isfinite(options.smoothness_preference) &&
+    options.smoothness_preference >= 0.0 && options.smoothness_preference <= 1.0;
+  if (!valid_preferences) {
     throw std::invalid_argument(
-            "all planning weights must be finite and nonnegative");
+            "planning preferences must be finite values between 0 and 1");
   }
 }
 

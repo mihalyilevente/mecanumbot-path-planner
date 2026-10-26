@@ -72,14 +72,14 @@ Metrics measure(const Costmap2D & map, const nav_msgs::msg::Path & path)
 double score(const Metrics & m, const PlannerOptions & options)
 {
   if (options.mode == OptimizationMode::Safest) {
-    return m.length + options.safety_weight * m.exposure;
+    return m.length + options.safetyWeight() * m.exposure;
   }
   if (options.mode == OptimizationMode::Smoothest) {
-    return m.length + options.smoothness_weight * m.turns;
+    return m.length + options.smoothnessWeight() * m.turns;
   }
   if (options.mode == OptimizationMode::Combined) {
-    return m.length + options.safety_weight * m.exposure +
-           options.smoothness_weight * m.turns;
+    return m.length + options.safetyWeight() * m.exposure +
+           options.smoothnessWeight() * m.turns;
   }
   return m.length;
 }
@@ -102,36 +102,36 @@ TEST(Criteria, SafestAcceptsLongerRouteForLessCostExposure)
 TEST(Criteria, SmoothestAcceptsLongerRouteWithFewerTurns)
 {
   // Two one-cell-wide corridors: a length-10 zigzag (four 90-degree turns),
-  // and a length-14 perimeter route (two 90-degree turns).
-  Costmap2D map(9, 7, 1.0, 0.0, 0.0, 254);
+  // and a length-12 perimeter route (two 90-degree turns).
+  Costmap2D map(9, 6, 1.0, 0.0, 0.0, 254);
   for (unsigned int x = 0; x <= 2; ++x) {map.setCost(x, 3, 0);}
   for (unsigned int x = 2; x <= 4; ++x) {map.setCost(x, 2, 0);}
   for (unsigned int x = 4; x <= 8; ++x) {map.setCost(x, 3, 0);}
-  for (unsigned int y = 3; y <= 6; ++y) {
+  for (unsigned int y = 3; y <= 5; ++y) {
     map.setCost(0, y, 0);
     map.setCost(8, y, 0);
   }
-  for (unsigned int x = 0; x <= 8; ++x) {map.setCost(x, 6, 0);}
+  for (unsigned int x = 0; x <= 8; ++x) {map.setCost(x, 5, 0);}
   const auto start = pose(0.5, 3.5), goal = pose(8.5, 3.5);
   PlannerOptions options;
   const auto shortest = measure(map, plan(map, start, goal, options));
   options.mode = OptimizationMode::Smoothest;
-  options.smoothness_weight = 2.0;
+  options.smoothness_preference = 1.0;
   const auto smoothest = measure(map, plan(map, start, goal, options));
   EXPECT_DOUBLE_EQ(shortest.length, 10.0);
-  EXPECT_DOUBLE_EQ(smoothest.length, 14.0);
+  EXPECT_DOUBLE_EQ(smoothest.length, 12.0);
   EXPECT_LT(smoothest.turns, shortest.turns);
   EXPECT_LT(score(smoothest, options), score(shortest, options));
 }
 
-TEST(Criteria, ZeroWeightsRestoreShortestPathExactly)
+TEST(Criteria, ZeroPreferencesRestoreShortestPathExactly)
 {
   Costmap2D map(9, 5, 0.3, 0.0, 0.0);
   for (unsigned int x = 1; x < 8; ++x) {map.setCost(x, 2, 220);}
   const auto start = pose(0.15, 0.15), goal = pose(2.55, 1.35);
   PlannerOptions options;
   const auto shortest = plan(map, start, goal, options);
-  options.safety_weight = options.smoothness_weight = 0.0;
+  options.safety_preference = options.smoothness_preference = 0.0;
   for (const auto mode : {OptimizationMode::Safest, OptimizationMode::Smoothest,
     OptimizationMode::Combined})
   {
@@ -140,7 +140,7 @@ TEST(Criteria, ZeroWeightsRestoreShortestPathExactly)
   }
 }
 
-TEST(Criteria, CombinedModeUsesSafetyAndSmoothnessWeights)
+TEST(Criteria, CombinedModeUsesSafetyAndSmoothnessPreferences)
 {
   Costmap2D map(9, 5, 1.0, 0.0, 0.0);
   for (unsigned int x = 1; x < 8; ++x) {map.setCost(x, 2, 220);}
@@ -152,8 +152,8 @@ TEST(Criteria, CombinedModeUsesSafetyAndSmoothnessWeights)
   EXPECT_GT(balanced.length, 8.0);
   EXPECT_DOUBLE_EQ(balanced.exposure, 0.0);
 
-  combined.safety_weight = 0.0;
-  combined.smoothness_weight = 0.0;
+  combined.safety_preference = 0.0;
+  combined.smoothness_preference = 0.0;
   PlannerOptions shortest_options;
   EXPECT_EQ(plan(map, start, goal, combined), plan(map, start, goal, shortest_options));
 }
@@ -195,25 +195,46 @@ TEST(Criteria, AllModesKeepCollisionBoundsAndSameCellRules)
   }
 }
 
-TEST(Criteria, RejectsInvalidWeightsAndModes)
+TEST(Criteria, PreferencesScaleLinearlyToDefinedMaximumPenalties)
 {
   PlannerOptions options;
-  for (double value : {-1.0, std::numeric_limits<double>::infinity(),
+  options.safety_preference = 0.0;
+  options.smoothness_preference = 0.0;
+  EXPECT_DOUBLE_EQ(options.safetyWeight(), 0.0);
+  EXPECT_DOUBLE_EQ(options.smoothnessWeight(), 0.0);
+
+  options.safety_preference = 0.5;
+  options.smoothness_preference = 0.5;
+  EXPECT_DOUBLE_EQ(
+    options.safetyWeight(), PlannerOptions::kMaximumSafetyWeight / 2.0);
+  EXPECT_DOUBLE_EQ(
+    options.smoothnessWeight(), PlannerOptions::kMaximumSmoothnessWeight / 2.0);
+
+  options.safety_preference = 1.0;
+  options.smoothness_preference = 1.0;
+  EXPECT_DOUBLE_EQ(options.safetyWeight(), PlannerOptions::kMaximumSafetyWeight);
+  EXPECT_DOUBLE_EQ(options.smoothnessWeight(), PlannerOptions::kMaximumSmoothnessWeight);
+}
+
+TEST(Criteria, RejectsInvalidPreferencesAndModes)
+{
+  PlannerOptions options;
+  for (double value : {-1.0, 1.000001, std::numeric_limits<double>::infinity(),
     std::numeric_limits<double>::quiet_NaN()})
   {
-    options.safety_weight = value;
+    options.safety_preference = value;
     EXPECT_THROW(validatePlannerOptions(options), std::invalid_argument);
-    options.safety_weight = 2.0;
-    options.smoothness_weight = value;
+    options.safety_preference = 1.0;
+    options.smoothness_preference = value;
     EXPECT_THROW(validatePlannerOptions(options), std::invalid_argument);
-    options.smoothness_weight = 0.5;
+    options.smoothness_preference = 1.0;
   }
   options.mode = static_cast<OptimizationMode>(99);
   EXPECT_THROW(validatePlannerOptions(options), std::invalid_argument);
   EXPECT_THROW(parseOptimizationMode("invalid"), std::invalid_argument);
   options.mode = OptimizationMode::Combined;
-  options.safety_weight = 0.0;
-  options.smoothness_weight = 0.0;
+  options.safety_preference = 0.0;
+  options.smoothness_preference = 0.0;
   EXPECT_NO_THROW(validatePlannerOptions(options));
 }
 
@@ -238,7 +259,7 @@ double referenceScore(
         (ax == 0.0 && ay == 0.0) ||
         (bx == 0.0 && by == 0.0)) {return 0.0;}
       const double angle = std::atan2(ax * by - ay * bx, ax * bx + ay * by);
-      return options.smoothness_weight * angle * angle;
+      return options.smoothnessWeight() * angle * angle;
     };
   auto travel = [&](int a, int b, double distance) {
       if (options.mode != OptimizationMode::Safest &&
@@ -249,7 +270,7 @@ double referenceScore(
       const double risk_a = std::min(1.0, map.getCost(a % width, a / width) / 252.0);
       const double risk_b = std::min(1.0, map.getCost(b % width, b / width) / 252.0);
       return distance *
-             (1.0 + options.safety_weight * (risk_a + risk_b) / 2.0);
+             (1.0 + options.safetyWeight() * (risk_a + risk_b) / 2.0);
     };
   auto free = [&](int x, int y) {return map.getCost(x, y) < 253;};
   struct Edge {int to; double cost;};
@@ -291,7 +312,7 @@ double referenceScore(
   return distances[sink];
 }
 
-TEST(Criteria, WeightedObjectivesMatchIndependentOracleIncludingEndpointTurns)
+TEST(Criteria, PreferenceObjectivesMatchIndependentOracleIncludingEndpointTurns)
 {
   std::mt19937 random(108);
   for (int trial = 0; trial < 40; ++trial) {
@@ -314,8 +335,8 @@ TEST(Criteria, WeightedObjectivesMatchIndependentOracleIncludingEndpointTurns)
     {
       PlannerOptions options;
       options.mode = mode;
-      options.safety_weight = trial % 4;
-      options.smoothness_weight = (trial % 4) * 0.6;
+      options.safety_preference = (trial % 4) / 3.0;
+      options.smoothness_preference = (trial % 4) / 3.0;
       const double expected = referenceScore(map, start, goal, options);
       if (!std::isfinite(expected)) {
         EXPECT_THROW(plan(map, start, goal, options), PlannerException);

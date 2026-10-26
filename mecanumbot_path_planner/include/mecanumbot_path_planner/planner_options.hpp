@@ -10,10 +10,23 @@ enum class OptimizationMode {Shortest, Safest, Smoothest, Combined};
 
 struct PlannerOptions
 {
+  static constexpr double kMaximumSafetyWeight = 2.0;
+  static constexpr double kMaximumSmoothnessWeight = 0.5;
+
   OptimizationMode mode{OptimizationMode::Shortest};
   bool allow_unknown{false};
-  double safety_weight{2.0};
-  double smoothness_weight{0.5};
+  double safety_preference{1.0};
+  double smoothness_preference{1.0};
+
+  double safetyWeight() const
+  {
+    return kMaximumSafetyWeight * safety_preference;
+  }
+
+  double smoothnessWeight() const
+  {
+    return kMaximumSmoothnessWeight * smoothness_preference;
+  }
 };
 
 OptimizationMode parseOptimizationMode(const std::string & mode);
