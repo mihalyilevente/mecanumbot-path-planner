@@ -1,0 +1,22 @@
+{
+  "name": "Mecanumbot ROS 2 Humble",
+  "dockerComposeFile": ["../compose.yaml"],
+  "service": "dev",
+  "workspaceFolder": "/ws/src/mecanumbot-path-planner",
+  "remoteUser": "dev",
+  "forwardPorts": [6080, 8765],
+  "portsAttributes": {
+    "6080": {"label": "Desktop (noVNC)"},
+    "8765": {"label": "Foxglove bridge"}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "ms-iot.vscode-ros",
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
+}

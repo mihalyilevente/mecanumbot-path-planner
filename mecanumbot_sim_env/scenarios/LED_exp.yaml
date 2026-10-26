@@ -1,0 +1,41 @@
+# Start/goal pairs on the LED_exp map. Points were generated with make_scenarios
+# (clearance 0.5 m, largest free region); every pair is used.
+# Poses are [x, y, yaw] in the map frame (m, rad).
+map: LED_exp
+waypoints:
+  wp1: [-1.215, 4.235]
+  wp2: [0.435, 2.585]
+  wp3: [-2.615, 5.935]
+  wp4: [-3.065, 4.585]
+  wp5: [-0.965, 2.835]
+pairs:
+  - name: wp1_to_wp2
+    start: [-1.215, 4.235, 0.0]
+    goal: [0.435, 2.585, 0.0]
+  - name: wp1_to_wp3
+    start: [-1.215, 4.235, 0.0]
+    goal: [-2.615, 5.935, 0.0]
+  - name: wp1_to_wp4
+    start: [-1.215, 4.235, 0.0]
+    goal: [-3.065, 4.585, 0.0]
+  - name: wp1_to_wp5
+    start: [-1.215, 4.235, 0.0]
+    goal: [-0.965, 2.835, 0.0]
+  - name: wp2_to_wp3
+    start: [0.435, 2.585, 0.0]
+    goal: [-2.615, 5.935, 0.0]
+  - name: wp2_to_wp4
+    start: [0.435, 2.585, 0.0]
+    goal: [-3.065, 4.585, 0.0]
+  - name: wp2_to_wp5
+    start: [0.435, 2.585, 0.0]
+    goal: [-0.965, 2.835, 0.0]
+  - name: wp3_to_wp4
+    start: [-2.615, 5.935, 0.0]
+    goal: [-3.065, 4.585, 0.0]
+  - name: wp3_to_wp5
+    start: [-2.615, 5.935, 0.0]
+    goal: [-0.965, 2.835, 0.0]
+  - name: wp4_to_wp5
+    start: [-3.065, 4.585, 0.0]
+    goal: [-0.965, 2.835, 0.0]

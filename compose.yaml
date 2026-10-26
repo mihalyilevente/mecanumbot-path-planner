@@ -1,0 +1,25 @@
+# Dev environment: `docker compose up -d --build`, then `docker compose exec dev bash`.
+# Desktop for Gazebo/RViz: http://localhost:6080/vnc.html  Foxglove: ws://localhost:8765
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: mecanumbot-dev:humble
+    hostname: mecanumbot-dev
+    init: true
+    shm_size: 2gb
+    ports:
+      - "127.0.0.1:6080:6080"
+      - "127.0.0.1:8765:8765"
+    volumes:
+      # The repository is the colcon source tree; build outputs live in named volumes.
+      - .:/ws/src/mecanumbot-path-planner
+      - build:/ws/build
+      - install:/ws/install
+      - log:/ws/log
+
+volumes:
+  build:
+  install:
+  log:
