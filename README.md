@@ -12,6 +12,32 @@ C++17 plugin implementing **shortest**, **safest**, **smoothest**, and
 does not modify the robot or simulation repositories. Current development is
 local only; do not push until explicitly requested.
 
+## Simulation environment (part 1)
+
+**New here? Start with [docs/getting-started.md](docs/getting-started.md)**, it
+goes from a fresh machine to the robot driving in Gazebo.
+
+[mecanumbot_sim_env](mecanumbot_sim_env/README.md) holds the Mecanumbot in
+Gazebo with the full Nav2 stack, the Nav2 configuration for the robot, the lab
+maps and five generated test maps with fixed start/goal sets, a harness that
+runs all planners through the real Planner Server, and a recorder that drives
+every route in Gazebo and saves the planned and driven paths. The easiest way to build and run everything,
+including on macOS, is the Docker setup described in [docs/docker.md](docs/docker.md):
+
+```bash
+docker compose up -d --build
+docker compose exec dev bash
+cb   # build the workspace
+```
+
+To start the robot in Gazebo with Nav2 and RViz:
+
+```bash
+ros2 launch mecanumbot_sim_env sim.launch.py map:=AI_dept
+```
+
+Notes on the Nav2 configuration are in [docs/phase2-nav2-config.md](docs/phase2-nav2-config.md).
+
 ## Reopen this workspace
 
 In PowerShell:

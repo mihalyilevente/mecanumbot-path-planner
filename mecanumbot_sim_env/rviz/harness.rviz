@@ -1,0 +1,109 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Map
+      Name: Map
+      Enabled: true
+      Topic:
+        Value: /map
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color Scheme: map
+      Alpha: 1
+    - Class: rviz_default_plugins/Map
+      Name: Global costmap
+      Enabled: true
+      Topic:
+        Value: /global_costmap/costmap
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        Depth: 1
+      Color Scheme: costmap
+      Alpha: 0.5
+    - Class: rviz_default_plugins/Path
+      Name: Shortest
+      Enabled: true
+      Topic:
+        Value: /harness/path/shortest
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color: 31; 119; 180
+      Line Style: Billboards
+      Line Width: 0.04
+      Alpha: 1
+      Pose Style: None
+    - Class: rviz_default_plugins/Path
+      Name: Safest
+      Enabled: true
+      Topic:
+        Value: /harness/path/safest
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color: 44; 160; 44
+      Line Style: Billboards
+      Line Width: 0.04
+      Alpha: 1
+      Pose Style: None
+    - Class: rviz_default_plugins/Path
+      Name: Smoothest
+      Enabled: true
+      Topic:
+        Value: /harness/path/smoothest
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color: 214; 39; 40
+      Line Style: Billboards
+      Line Width: 0.04
+      Alpha: 1
+      Pose Style: None
+    - Class: rviz_default_plugins/Path
+      Name: Combined
+      Enabled: true
+      Topic:
+        Value: /harness/path/combined
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color: 148; 103; 189
+      Line Style: Billboards
+      Line Width: 0.04
+      Alpha: 1
+      Pose Style: None
+    - Class: rviz_default_plugins/Path
+      Name: NavFn
+      Enabled: true
+      Topic:
+        Value: /harness/path/navfn
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Depth: 1
+      Color: 255; 127; 14
+      Line Style: Billboards
+      Line Width: 0.04
+      Alpha: 1
+      Pose Style: None
+  Global Options:
+    Fixed Frame: map
+    Background Color: 48; 48; 48
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Current View
+      Scale: 30
+      X: 0
+      Y: 0
+Window Geometry:
+  Width: 1400
+  Height: 850

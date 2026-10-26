@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mecanumbot_sim_env</name>
+  <version>0.1.0</version>
+  <description>Simulation environment, Nav2 configuration, test maps and planner harness for the Mecanumbot path-criteria project.</description>
+  <maintainer email="75853960+ozsvartzoltan@users.noreply.github.com">Zoltán Ozsvárt</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <exec_depend>nav2_common</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+  <exec_depend>nav2_planner</exec_depend>
+  <exec_depend>nav2_navfn_planner</exec_depend>
+  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>navigation2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>nav2_amcl</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>mecanumbot_path_planner</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-pil</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

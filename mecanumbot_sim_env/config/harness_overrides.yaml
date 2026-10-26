@@ -1,0 +1,7 @@
+# Loaded after nav2_params.yaml by planner_harness.launch.py.
+# The harness has no robot and no lidar, so the global costmap is built from the
+# static map and its inflation only. Everything else stays as in nav2_params.yaml.
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      plugins: ["static_layer", "inflation_layer"]

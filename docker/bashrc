@@ -1,0 +1,10 @@
+# Sourced by every interactive shell in the dev container.
+source /opt/ros/humble/setup.bash
+if [[ -f /ws/install/setup.bash ]]; then
+  source /ws/install/setup.bash
+fi
+
+# Build and test from anywhere; artifacts stay in /ws, outside the repository.
+alias cb='(cd /ws && colcon build --symlink-install)'
+alias ct='(cd /ws && colcon test --event-handlers console_direct+; colcon test-result --verbose)'
+alias sws='source /ws/install/setup.bash'

@@ -1,0 +1,40 @@
+# Start/goal pairs on the AI_dept map, built from every pair of the map's
+# upstream waypoints. Poses are [x, y, yaw] in the map frame (m, rad).
+map: AI_dept
+waypoints:
+  wp1: [-3.470, -5.710]
+  wp2: [-5.430, -8.720]
+  wp3: [-1.160, -2.630]
+  wp4: [5.350, 5.770]
+  wp5: [3.320, 2.410]
+pairs:
+  - name: wp1_to_wp2
+    start: [-3.470, -5.710, 0.0]
+    goal: [-5.430, -8.720, 0.0]
+  - name: wp1_to_wp3
+    start: [-3.470, -5.710, 0.0]
+    goal: [-1.160, -2.630, 0.0]
+  - name: wp1_to_wp4
+    start: [-3.470, -5.710, 0.0]
+    goal: [5.350, 5.770, 0.0]
+  - name: wp1_to_wp5
+    start: [-3.470, -5.710, 0.0]
+    goal: [3.320, 2.410, 0.0]
+  - name: wp2_to_wp3
+    start: [-5.430, -8.720, 0.0]
+    goal: [-1.160, -2.630, 0.0]
+  - name: wp2_to_wp4
+    start: [-5.430, -8.720, 0.0]
+    goal: [5.350, 5.770, 0.0]
+  - name: wp2_to_wp5
+    start: [-5.430, -8.720, 0.0]
+    goal: [3.320, 2.410, 0.0]
+  - name: wp3_to_wp4
+    start: [-1.160, -2.630, 0.0]
+    goal: [5.350, 5.770, 0.0]
+  - name: wp3_to_wp5
+    start: [-1.160, -2.630, 0.0]
+    goal: [3.320, 2.410, 0.0]
+  - name: wp4_to_wp5
+    start: [5.350, 5.770, 0.0]
+    goal: [3.320, 2.410, 0.0]
