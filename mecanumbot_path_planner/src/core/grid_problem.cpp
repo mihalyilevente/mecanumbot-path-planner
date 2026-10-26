@@ -195,7 +195,7 @@ double GridProblem::directionAngle(std::size_t direction) const
 double GridProblem::turnCost(double from, double to) const
 {
   const double angle = std::atan2(std::sin(to - from), std::cos(to - from));
-  return options.smoothness_weight * angle * angle;
+  return options.smoothnessWeight() * angle * angle;
 }
 
 bool samePosition(

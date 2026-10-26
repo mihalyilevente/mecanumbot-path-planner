@@ -76,7 +76,7 @@ TEST_F(PluginLoading, AllModesPlanAndValidateConfiguration)
   ASSERT_TRUE(node->set_parameter(
     rclcpp::Parameter("GridBased.optimization_mode", "safest")).successful);
   for (const std::string parameter : {
-    "GridBased.safety_weight", "GridBased.smoothness_weight"})
+    "GridBased.safety_preference", "GridBased.smoothness_preference"})
   {
     ASSERT_TRUE(node->set_parameter(rclcpp::Parameter(parameter, -1.0)).successful);
     EXPECT_THROW(planner->configure(node, "GridBased", tf, costmap), std::invalid_argument);
@@ -86,7 +86,7 @@ TEST_F(PluginLoading, AllModesPlanAndValidateConfiguration)
   planner->configure(node, "GridBased", tf, costmap);
   planner->activate();
   for (const auto & p : planner->createPlan(pose, goal).poses) {
-    EXPECT_DOUBLE_EQ(p.pose.position.y, 2.5);  // Zero safety weight restores shortest.
+    EXPECT_DOUBLE_EQ(p.pose.position.y, 2.5);  // Zero safety preference restores shortest.
   }
   planner->deactivate();
   planner->cleanup();

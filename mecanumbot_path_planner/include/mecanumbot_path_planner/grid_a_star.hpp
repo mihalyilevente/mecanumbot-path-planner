@@ -12,9 +12,9 @@
 namespace mecanumbot_path_planner
 {
 
-// Safest: length + safety_weight * integral of normalized costmap cost.
-// Smoothest: length + smoothness_weight * sum of squared travel-direction changes.
-// Combined: length + weighted cost exposure + weighted direction changes.
+// Safest: length + scaled safety preference * normalized costmap exposure.
+// Smoothest: length + scaled smoothness preference * squared direction changes.
+// Combined: length plus both preference-controlled penalties.
 // See README for discrete edge costs, endpoint connectors and scope of guarantees.
 nav_msgs::msg::Path createGridPath(
   const nav2_costmap_2d::Costmap2D & map, const std::string & global_frame,

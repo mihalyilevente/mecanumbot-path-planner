@@ -117,9 +117,9 @@ Confirmed on 2026-10-24 after resuming the interrupted session:
   Colcon reports 22 results, 0 errors, 0 failures, 0 skipped.
 - Both new objectives match an independent direction-expanded Dijkstra oracle
   on 40 seeded maps each, including offset endpoints, connector turns, varied
-  weights and map resolutions. The original 100-map shortest-path check passes.
-- Tests demonstrate the distance/exposure and distance/turn tradeoffs, zero-weight
-  equivalence, unknown-space penalties, common collision rules, and invalid weights.
+  preferences and map resolutions. The original 100-map shortest-path check passes.
+- Tests demonstrate the distance/exposure and distance/turn tradeoffs, zero-preference
+  equivalence, unknown-space penalties, common collision rules, and invalid preferences.
 - Installed-plugin tests exercise shortest, safest, smoothest, and combined modes.
 - No additional dependencies, robot runs, commits, or pushes were performed.
   Changes remain local on develop. Synthetic tests do not establish robot safety
@@ -140,8 +140,10 @@ Source files are grouped under `src/plugin`, `src/core`, `src/planners`, and
 ## Combined weighted planner
 
 The local implementation also provides `optimization_mode: combined`, minimizing
-`length + safety_weight * exposure + smoothness_weight * turns`. Both exposed
-weights are finite, nonnegative ROS parameters. When both are zero, combined
-mode delegates exactly to shortest. It reuses the shared search code and switches
-to direction-aware states only when turn weight is positive. No commit or push was
+`length + (2 * safety_preference) * exposure + (0.5 m/rad^2 *
+smoothness_preference) * turns`. Both exposed preferences are
+finite ROS parameters in `[0, 1]`; one means the defined maximum penalty. When
+both are zero, combined mode delegates exactly to shortest. It reuses the shared
+search code and switches to direction-aware states only when smoothness is positive.
+No commit or push was
 performed. The current build reports 23 tests, 0 errors, 0 failures, and 0 skipped.

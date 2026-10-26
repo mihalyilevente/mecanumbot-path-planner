@@ -9,7 +9,7 @@ std::vector<std::size_t> findSafestPath(const GridProblem & problem)
       const double average_risk =
         (problem.risk(current) + problem.risk(neighbor.cell)) / 2.0;
       return neighbor.distance *
-             (1.0 + problem.options.safety_weight * average_risk);
+             (1.0 + problem.options.safetyWeight() * average_risk);
     });
 }
 }  // namespace mecanumbot_path_planner::detail

@@ -17,14 +17,14 @@ std::vector<std::size_t> findCells(const detail::GridProblem & problem)
     case OptimizationMode::Shortest:
       return detail::findShortestPath(problem);
     case OptimizationMode::Safest:
-      return problem.options.safety_weight == 0.0 ?
+      return problem.options.safety_preference == 0.0 ?
              detail::findShortestPath(problem) : detail::findSafestPath(problem);
     case OptimizationMode::Smoothest:
-      return problem.options.smoothness_weight == 0.0 ?
+      return problem.options.smoothness_preference == 0.0 ?
              detail::findShortestPath(problem) : detail::findSmoothestPath(problem);
     case OptimizationMode::Combined:
-      return problem.options.safety_weight == 0.0 &&
-             problem.options.smoothness_weight == 0.0 ?
+      return problem.options.safety_preference == 0.0 &&
+             problem.options.smoothness_preference == 0.0 ?
              detail::findShortestPath(problem) : detail::findCombinedPath(problem);
   }
   return {};  // validatePlannerOptions rejects unknown enum values.

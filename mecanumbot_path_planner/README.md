@@ -23,12 +23,12 @@ These are explicit engineering objectives, not universal definitions of safety
 or smoothness. Let `L` be planar length in meters, `E` costmap exposure, and `T`
 the sum of squared changes in travel direction in radians squared:
 
-| Mode | Minimized objective | Default weight |
+| Mode | Minimized objective | Exposed preference |
 | --- | --- | --- |
 | `shortest` | `L` | None |
-| `safest` | `L + safety_weight * E` | `2.0` (dimensionless) |
-| `smoothest` | `L + smoothness_weight * T` | `0.5` meters/radian squared |
-| `combined` | `L + safety_weight * E + smoothness_weight * T` | `2.0`, `0.5` respectively |
+| `safest` | `L + (2.0 * safety_preference) * E` | `safety_preference` in `[0, 1]` |
+| `smoothest` | `L + (0.5 m/rad^2 * smoothness_preference) * T` | `smoothness_preference` in `[0, 1]` |
+| `combined` | Sum of the three terms above | Both normalized preferences |
 
 For each grid edge of length `d`, exposure is `d * (r(a) + r(b)) / 2`, where
 `r = cost / 252` for traversable known cells. Allowed unknown cells have `r = 1`,
@@ -54,14 +54,15 @@ not be added during search; connector turns do affect smoothest. Same-cell
 requests retain the direct-segment behavior. The distance-only octile heuristic
 is admissible because all additional penalties are nonnegative.
 
-Weights must be finite and nonnegative. In the individual modes, zero restores
-shortest-path behavior for that mode's extra term. Combined mode always counts
-path length and exposes safety and smoothness weights. Zero disables that extra
-criterion; setting both weights to zero runs the shortest planner exactly.
-Increasing a weight permits longer detours to reduce its penalty. Defaults are
-starting values, not tuned Mecanumbot parameters. Smoothest remains a polyline:
+Preferences must be finite values in `[0, 1]`, making them suitable for UI
+sliders. Zero disables that criterion and one applies its defined maximum
+penalty: safety weight `2.0`, or smoothness weight `0.5 m/rad^2`. Intermediate
+values scale that maximum linearly. Combined mode always counts path length;
+setting both preferences to zero runs the shortest planner exactly. These
+maximums preserve the former defaults and are not tuned Mecanumbot parameters.
+Smoothest remains a polyline:
 it does not provide continuous curvature, acceleration, or jerk limits, and
-large turn weights can favor long detours or revisiting a cell with a different
+strong turn penalties can favor long detours or revisiting a cell with a different
 arrival direction. Safest does not optimize turns; smoothest does not penalize
 traversable inflation costs. All modes use the same hard collision rules.
 
@@ -108,7 +109,7 @@ The implementation follows one short pipeline:
 Shortest and safest share the ordinary cell-state search and supply different
 edge-cost functions. Smoothest uses direction-aware search because turn cost
 depends on how the robot entered a cell. Combined uses ordinary search when its
-turn weight is zero and direction-aware search otherwise.
+smoothness preference is zero and direction-aware search otherwise.
 
 `config/planner_params.yaml` is a **Planner Server fragment**, not a full Nav2
 bringup configuration. It retains Mecanumbot's existing `GridBased` planner ID.
@@ -148,7 +149,7 @@ synthetic map tests, not evidence of robot or simulator navigation performance.
 Criterion tests additionally compare both weighted objectives against an independent
 direction-expanded Dijkstra oracle on 40 seeded maps per mode, including endpoint
 turns and different resolutions. Fixtures demonstrate a safer detour and a longer
-route with fewer turns; zero-weight, unknown-space, and collision rules are checked.
+route with fewer turns; zero-preference, unknown-space, and collision rules are checked.
 Rebuild and source the overlay before testing.
 
 On a fresh Ubuntu 22.04 system with the official ROS 2 Humble apt repository
@@ -171,10 +172,10 @@ packages is needed to build this plugin.
 | --- | --- |
 | `include/mecanumbot_path_planner/a_star_planner.hpp` | Humble interface and lifecycle state |
 | `src/plugin/a_star_planner.cpp` | Lifecycle, parameters, costmap snapshot, plugin registration |
-| `include/mecanumbot_path_planner/planner_options.hpp`, `src/core/planner_options.cpp` | Mode, weights, parsing and validation |
+| `include/mecanumbot_path_planner/planner_options.hpp`, `src/core/planner_options.cpp` | Mode, normalized preferences, scaling and validation |
 | `src/plugin/` | Nav2 lifecycle and costmap adapter |
 | `src/core/` | Options, validation, dispatch, shared map geometry and path output |
-| `src/planners/` | One focused implementation per planning objective, including combined weights |
+| `src/planners/` | One focused implementation per planning objective, including combined penalties |
 | `src/search/` | Reusable A* queue and cell-search mechanics |
 | `config/planner_params.yaml` | Future Planner Server integration fragment |
 | `plugin.xml` | Plugin lookup name, C++ type, base class and shared library |
@@ -188,7 +189,7 @@ packages is needed to build this plugin.
 Validate the baseline with the real Nav2 Planner Server in a separate simulation
 configuration, including Mecanumbot's footprint, inflation, TF, and maps. Compare
 path length and planning time against NavFn. Evaluate cost exposure and squared
-direction changes separately, then tune weights against measured clearance and
+direction changes separately, then tune preferences against measured clearance and
 controller behavior. No robot
 configuration should be replaced by this package's parameter fragment.
 
