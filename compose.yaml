@@ -1,5 +1,6 @@
 # Dev environment: `docker compose up -d --build`, then `docker compose exec dev bash`.
-# Desktop for Gazebo/RViz: http://localhost:6080/vnc.html  Foxglove: ws://localhost:8765
+# Desktop (noVNC): http://localhost:6080/vnc.html  Planner UI: http://localhost:8090
+# Foxglove (reserved): ws://localhost:8765
 services:
   dev:
     build:
@@ -12,6 +13,7 @@ services:
     ports:
       - "127.0.0.1:6080:6080"
       - "127.0.0.1:8765:8765"
+      - "127.0.0.1:8090:8090"
     volumes:
       # The repository is the colcon source tree; build outputs live in named volumes.
       - .:/ws/src/mecanumbot-path-planner

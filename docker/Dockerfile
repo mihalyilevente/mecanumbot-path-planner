@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-numpy \
     python3-yaml \
     python3-pil \
+    python3-flask \
     gdb \
     && rm -rf /var/lib/apt/lists/*
 

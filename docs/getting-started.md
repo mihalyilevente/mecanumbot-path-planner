@@ -169,7 +169,27 @@ be any of these:
 | `test_dead_end` | U-shaped trap in front of the goal |
 | `test_open_room` | empty room, the baseline |
 
-## 7. Test the planners (part 2)
+## 7. Planner UI (part 4)
+
+With the simulation from section 6 still running, open a second container shell
+and start the browser UI:
+
+```bash
+docker compose exec dev bash
+ros2 launch mecanumbot_planner_ui ui.launch.py
+```
+
+Open <http://localhost:8090> on the host. Pick a criterion (Shortest, Safest,
+Smoothest, Combined, or NavFn), set a goal by clicking the map (drag to set
+heading) or by loading a scenario pair, then **Drive**. **Compare all** draws
+one coloured path per planner without moving the robot. **Cancel** aborts an
+active NavigateToPose goal.
+
+RViz in the noVNC desktop is optional; the UI page shows the map and paths on
+its own. Details and lab overrides are in
+`mecanumbot_planner_ui/README.md`.
+
+## 8. Test the planners (part 2)
 
 The four planners are `Shortest`, `Safest`, `Smoothest` and `Combined`, with
 Nav2's own `NavFn` as a baseline. Only one launch can run at a time, so stop
@@ -255,7 +275,7 @@ whatever the planner, see section 6.)
 - An energy/time criterion and per-path metric reporting (from the task page)
   are not implemented yet.
 
-## 8. Shutting down
+## 9. Shutting down
 
 ```bash
 exit                    # leave the container shell

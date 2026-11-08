@@ -4,10 +4,11 @@
   "service": "dev",
   "workspaceFolder": "/ws/src/mecanumbot-path-planner",
   "remoteUser": "dev",
-  "forwardPorts": [6080, 8765],
+  "forwardPorts": [6080, 8765, 8090],
   "portsAttributes": {
     "6080": {"label": "Desktop (noVNC)"},
-    "8765": {"label": "Foxglove bridge"}
+    "8765": {"label": "Foxglove bridge"},
+    "8090": {"label": "Planner UI"}
   },
   "customizations": {
     "vscode": {

@@ -1,0 +1,17 @@
+planner_ui:
+  ros__parameters:
+    host: "0.0.0.0"
+    port: 8090
+    use_sim_time: true
+    map_topic: "map"
+    odom_topic: "/mecanumbot/odom"
+    plan_topic: "plan"
+    navigate_action: "navigate_to_pose"
+    compute_path_action: "compute_path_to_pose"
+    # odom: map==odom (Docker sim localization:=none). tf: map->base_link for AMCL.
+    pose_source: "odom"
+    map_frame: "map"
+    base_frame: "mecanumbot/base_link"
+    # Empty strings resolve to mecanumbot_sim_env share paths at startup.
+    behavior_trees_dir: ""
+    scenarios_dir: ""
