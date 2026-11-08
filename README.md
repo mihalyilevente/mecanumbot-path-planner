@@ -8,9 +8,11 @@ repository scaffold. Make future changes and pushes on develop.
 
 The [mecanumbot_path_planner](mecanumbot_path_planner/README.md) package provides a
 C++17 plugin implementing **shortest**, **safest**, **smoothest**, and
-**combined weighted** grid A* with explicit cost functions. This repository
-does not modify the robot or simulation repositories. Current development is
-local only; do not push until explicitly requested.
+**combined weighted** grid A* with explicit cost functions. Part 4 lives in
+[mecanumbot_planner_ui](mecanumbot_planner_ui/README.md): a Flask browser UI
+(port 8090) to select criteria, visualise paths, and drive via Nav2. This
+repository does not modify the robot or simulation repositories. Current
+development is local only; do not push until explicitly requested.
 
 ## Simulation environment (part 1)
 

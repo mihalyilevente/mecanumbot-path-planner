@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Mecanumbot Planner UI{% endblock %}
+{% block body %}
+<header class="top">
+  <h1>Mecanumbot Planner</h1>
+  <p class="tagline">Select criteria, compare paths, drive the robot</p>
+</header>
+
+<main class="layout">
+  <aside class="panel">
+    <section>
+      <h2>Criteria</h2>
+      <div id="planner-list" class="planner-list"></div>
+    </section>
+
+    <section>
+      <h2>Scenario</h2>
+      <label class="field">
+        Map scenario
+        <select id="scenario-select"></select>
+      </label>
+      <label class="field">
+        Pair
+        <select id="pair-select"></select>
+      </label>
+      <button type="button" id="btn-load-scenario" class="secondary">Load start / goal</button>
+    </section>
+
+    <section>
+      <h2>Actions</h2>
+      <div class="btn-row">
+        <button type="button" id="btn-compare">Compare all</button>
+        <button type="button" id="btn-drive" class="primary">Drive</button>
+        <button type="button" id="btn-cancel" class="danger">Cancel</button>
+      </div>
+      <p class="hint">Click the map to set a goal; drag to set heading.</p>
+    </section>
+
+    <section>
+      <h2>Status</h2>
+      <pre id="status-box" class="status-box">Connecting…</pre>
+    </section>
+  </aside>
+
+  <section class="map-wrap">
+    <canvas id="map-canvas" width="800" height="600" aria-label="Map canvas"></canvas>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
